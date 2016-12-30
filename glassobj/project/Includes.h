@@ -24,6 +24,7 @@
 
 #include <SOIL/SOIL.h>
 
+#include "Settings.h"
 #include "Shader.h"
 #include "Vertex.h"
 #include "Texture.h"
