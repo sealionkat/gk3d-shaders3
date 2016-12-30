@@ -25,6 +25,7 @@
 #include <SOIL/SOIL.h>
 
 #include "Shader.h"
+#include "Vertex.h"
 
 
 #endif // !INCLUDES_H
