@@ -26,6 +26,8 @@
 
 #include "Shader.h"
 #include "Vertex.h"
+#include "Mesh.h"
+#include "Model.h"
 
 
 #endif // !INCLUDES_H
