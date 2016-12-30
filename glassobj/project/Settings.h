@@ -10,7 +10,7 @@ public:
   static constexpr const GLchar *VertexPath = "shaders/vertexShader.glsl";
   static constexpr const GLchar *FragmentPath = "shaders/fragmentShader.glsl";
 
-  static constexpr const char *WindowTitle = "Underground";
+  static constexpr const char *WindowTitle = "Glass object";
   static const GLuint ScreenWidth = 1366;
   static const GLuint ScreenHeight = 768;
 
