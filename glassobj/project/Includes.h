@@ -26,6 +26,7 @@
 
 #include "Shader.h"
 #include "Vertex.h"
+#include "Texture.h"
 #include "Mesh.h"
 #include "Model.h"
 
