@@ -24,5 +24,7 @@
 
 #include <SOIL/SOIL.h>
 
+#include "Shader.h"
+
 
 #endif // !INCLUDES_H
