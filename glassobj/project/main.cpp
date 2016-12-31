@@ -1,6 +1,174 @@
 #include "Includes.h"
 
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+void do_movement();
+
+const GLuint WIDTH = Settings::ScreenWidth, HEIGHT = Settings::ScreenHeight;
+
+// Camera
+glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 0.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+GLfloat yaw = -90.0f;
+GLfloat pitch = 0.0f;
+GLfloat lastX = WIDTH / 2.0;
+GLfloat lastY = HEIGHT / 2.0;
+
+// Deltatime
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
+
+bool keys[1024];
+
 int main()
 {
+    std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
+
+    glfwInit();
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, Settings::OpenGLMajorVersion);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, Settings::OpenGLMinorVersion);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+    GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, Settings::WindowTitle, nullptr, nullptr);
+    if (window == nullptr)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
+    {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return -1;
+    }
+
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glViewport(0, 0, width, height);
+
+    glEnable(GL_DEPTH_TEST);
+
+    std::cout << "Using " << glGetString(GL_VENDOR) << ", OpenGL " << glGetString(GL_VERSION) << ", Renderer " << glGetString(GL_RENDERER) << std::endl;
+
+    // Game loop
+    std::cout << "Starting main loop!" << std::endl;
+    while (!glfwWindowShouldClose(window))
+    {
+        GLfloat currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        glfwPollEvents();
+        do_movement();
+
+        glBindBuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glfwSwapBuffers(window);
+    }
+
+    std::cout << "Terminating application..." << std::endl;
+    glfwTerminate();
+
     return 0;
+}
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
+{
+    // std::cout << "Key: " << key << std::endl;
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+    if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+        {
+            keys[key] = true;
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            keys[key] = false;
+        }
+    }
+}
+
+void do_movement()
+{
+    GLfloat cameraSpeed = Settings::CameraSpeed * deltaTime;
+    if (keys[Settings::UpKey])
+    {
+        cameraPos += cameraSpeed * cameraUp;
+    }
+    if (keys[Settings::DownKey])
+    {
+        cameraPos -= cameraSpeed * cameraUp;
+    }
+    if (keys[Settings::ForwardKey])
+    {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    if (keys[Settings::BackwardKey])
+    {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    if (keys[Settings::LeftKey])
+    {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (keys[Settings::RightKey])
+    {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+}
+
+bool firstMouse = true;
+void mouse_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    GLfloat xoffset = xpos - lastX;
+    GLfloat yoffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+
+    GLfloat sensitivity = Settings::MouseSensitivity;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if (pitch > 89.0f)
+    {
+        pitch = 89.0f;
+    }
+    if (pitch < -89.0f)
+    {
+        pitch = -89.0f;
+    }
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
 }
