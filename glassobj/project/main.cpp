@@ -141,6 +141,18 @@ int main()
     glBindVertexArray(0);
 
 
+    std::cout << "Loading cubemap..." << std::endl;
+    std::vector<const GLchar* > faces;
+    faces.push_back("textures/SunSetRight2048.png");
+    faces.push_back("textures/SunSetLeft2048.png");
+    faces.push_back("textures/SunSetUp2048.png");
+    faces.push_back("textures/SunSetDown2048.png");
+    faces.push_back("textures/SunSetBack2048.png");
+    faces.push_back("textures/SunSetFront2048.png");
+    Texture *cubemap = new Texture();
+    cubemap->loadCubemap(faces);
+
+
     // Show loop
     std::cout << "Starting main loop!" << std::endl;
     while (!glfwWindowShouldClose(window))
