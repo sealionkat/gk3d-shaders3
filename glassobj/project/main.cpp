@@ -157,8 +157,33 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        shaderCube.Use();
+
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        projection = glm::perspective(glm::radians(Settings::FOV), (float)width/(float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
+
+        glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
+
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+
+
         glfwSwapBuffers(window);
     }
+
+    std::cout << "Cleaning..." << std::endl;
+    glDeleteVertexArrays(1, &cubeVAO);
+    glDeleteBuffers(1, &cubeVBO);
 
     std::cout << "Terminating application..." << std::endl;
     glfwTerminate();
