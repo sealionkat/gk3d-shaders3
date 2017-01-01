@@ -61,7 +61,87 @@ int main()
 
     std::cout << "Using " << glGetString(GL_VENDOR) << ", OpenGL " << glGetString(GL_VERSION) << ", Renderer " << glGetString(GL_RENDERER) << std::endl;
 
-    // Game loop
+    std::cout << "Preperaing shaders..." << std::endl;
+    const GLchar *vertexCubePath = "shaders/vertexCubeShader.glsl";
+    const GLchar *fragmentCubePath = "shaders/fragmentCubeShader.glsl";
+
+    Shader shaderCube(vertexCubePath, fragmentCubePath);
+
+
+    std::cout << "Creating cube" << std::endl;
+    GLfloat cube[] = {
+        8.0f, 8.0f, 8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //right
+        8.0f, 8.0f, -8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, 8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+        8.0f, -8.0f, 8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, 8.0f, -8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, -8.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //left
+        -8.0f, 8.0f, 8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -8.0f, 8.0f, -8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -8.0f, 8.0f, -8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -8.0f, -8.0f, -8.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, 8.0f, 8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, //up
+        -8.0f, 8.0f, -8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, 8.0f, -8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+
+        8.0f, 8.0f, -8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, 8.0f, 8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        -8.0f, 8.0f, 8.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, //down
+        -8.0f, -8.0f, -8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, -8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, -8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, 8.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, //back
+        -8.0f, 8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        8.0f, 8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+
+        8.0f, 8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -8.0f, -8.0f, -8.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, //front
+        8.0f, 8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        8.0f, -8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+
+        -8.0f, -8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        8.0f, 8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        -8.0f, 8.0f, 8.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f
+
+    };
+
+    GLuint cubeVBO, cubeVAO;
+    glGenVertexArrays(1, &cubeVAO);
+    glGenBuffers(1, &cubeVBO);
+
+    glBindVertexArray(cubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)0); //location 0 - position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat))); //location 1 - normal
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat))); // location 2 - texture coords
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    glBindVertexArray(0);
+
+
+    // Show loop
     std::cout << "Starting main loop!" << std::endl;
     while (!glfwWindowShouldClose(window))
     {
