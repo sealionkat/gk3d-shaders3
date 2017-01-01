@@ -183,6 +183,11 @@ int main()
         glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
 
+        glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), cameraPos.x, cameraPos.y, cameraPos.z);
+
+
+        cubemap->useCubemap(shaderCube);
+
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
