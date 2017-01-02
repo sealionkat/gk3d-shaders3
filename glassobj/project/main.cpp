@@ -7,7 +7,7 @@ void do_movement();
 const GLuint WIDTH = Settings::ScreenWidth, HEIGHT = Settings::ScreenHeight;
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 0.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 2.0f, 6.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 GLfloat yaw = -90.0f;
@@ -64,8 +64,11 @@ int main()
     std::cout << "Preperaing shaders..." << std::endl;
     const GLchar *vertexCubePath = "shaders/vertexCubeShader.glsl";
     const GLchar *fragmentCubePath = "shaders/fragmentCubeShader.glsl";
+    const GLchar *vertexGlassPath = "shaders/vertexGlassShader.glsl";
+    const GLchar *fragmentGlassPath = "shaders/fragmentGlassShader.glsl";
 
     Shader shaderCube(vertexCubePath, fragmentCubePath);
+    Shader shaderGlass(vertexGlassPath, fragmentGlassPath);
 
 
     std::cout << "Creating cube" << std::endl;
@@ -141,6 +144,11 @@ int main()
     glBindVertexArray(0);
 
 
+    std::cout << "Creating wolf object..." << std::endl;
+    Model *wolf = new Model("models/Wolf.obj");
+    wolf->SetColor(glm::vec3(0.75f, 0.75f, 0.75f));
+
+
     std::cout << "Loading cubemap..." << std::endl;
     std::vector<const GLchar* > faces;
     faces.push_back("textures/SunSetRight2048.png");
@@ -192,6 +200,17 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
+
+        shaderGlass.Use();
+
+        glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
+
+        glm::mat4 scaledModel;
+        scaledModel = glm::scale(scaledModel, glm::vec3(0.02f, 0.02f, 0.02f));
+        glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(scaledModel));
+
+        wolf->Draw(shaderGlass);
 
 
 
