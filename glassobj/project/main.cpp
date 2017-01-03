@@ -205,10 +205,13 @@ int main()
 
         glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniform3f(glGetUniformLocation(shaderGlass.Program, Settings::viewPosLoc), cameraPos.x, cameraPos.y, cameraPos.z);
 
         glm::mat4 scaledModel;
         scaledModel = glm::scale(scaledModel, glm::vec3(0.02f, 0.02f, 0.02f));
         glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(scaledModel));
+
+        cubemap->useCubemap(shaderGlass);
 
         wolf->Draw(shaderGlass);
 
