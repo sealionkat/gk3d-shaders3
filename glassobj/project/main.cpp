@@ -3,7 +3,7 @@
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void do_movement();
-void draw_scene(glm::vec3 camPos, glm::vec3 camFront, glm::vec3 camUp, Shader shaderCube, Framebuffer buffer, Texture cubemap, int width, int height, GLfloat, GLuint cubeVAO);
+void draw_scene(glm::vec3 &camPos, glm::vec3 &camFront, glm::vec3 &camUp, Shader &shaderCube, Framebuffer &buffer, Texture &cubemap, int width, int height, GLuint cubeVAO);
 
 const GLuint WIDTH = Settings::ScreenWidth, HEIGHT = Settings::ScreenHeight;
 
@@ -79,6 +79,13 @@ int main()
     Framebuffer yNeg = Framebuffer(width, height);
     Framebuffer zPos = Framebuffer(width, height);
     Framebuffer zNeg = Framebuffer(width, height);
+
+    xPos.InitTextureFramebuffer();
+    xNeg.InitTextureFramebuffer();
+    yPos.InitTextureFramebuffer();
+    yNeg.InitTextureFramebuffer();
+    zPos.InitTextureFramebuffer();
+    zNeg.InitTextureFramebuffer();
 
     std::cout << "Preparing cameras for dynamic environmental mapping..." << std::endl;
 
@@ -220,161 +227,20 @@ int main()
         glBindVertexArray(0);
         //glDepthMask(GL_TRUE);
 
-        /* DRAWING ON FRAMEBUFFERS */
 
-        /* framebuffer xPos */
-        // xPos->BindBuffer();
+        draw_scene(camMainPos, camXPosFront, camHorizontalUp, shaderCube, xPos, cubemap, width, height, cubeVAO);
+        draw_scene(camMainPos, camXNegFront, camHorizontalUp, shaderCube, xNeg, cubemap, width, height, cubeVAO);
+        draw_scene(camMainPos, camYPosFront, camVerticalUp, shaderCube, yPos, cubemap, width, height, cubeVAO);
+        draw_scene(camMainPos, camYNegFront, camVerticalUp, shaderCube, yNeg, cubemap, width, height, cubeVAO);
+        draw_scene(camMainPos, camZPosFront, camHorizontalUp, shaderCube, zPos, cubemap, width, height, cubeVAO);
+        draw_scene(camMainPos, camZNegFront, camHorizontalUp, shaderCube, zNeg, cubemap, width, height, cubeVAO);
 
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camXPosFront, camHorizontalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // xPos->DetachBuffer();
-
-        // /* framebuffer xNeg */
-
-        // xNeg->BindBuffer();
-
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camXNegFront, camHorizontalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // xNeg->DetachBuffer();
-
-        // /* framebuffer yPos */
-
-        // yPos->BindBuffer();
-
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camYPosFront, camVerticalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // yPos->DetachBuffer();
-
-        // /* framebuffer yNeg */
-
-        // yNeg->BindBuffer();
-
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camYNegFront, camVerticalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // yNeg->DetachBuffer();
-
-        // /* framebuffer zPos */
-
-        // zPos->BindBuffer();
-
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camZPosFront, camHorizontalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // zPos->DetachBuffer();
-
-        // /* framebuffer zNeg */
-
-        // zNeg->BindBuffer();
-
-        // shaderCube.Use();
-
-        // model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        // view = glm::lookAt(camMainPos, camMainPos + camZNegFront, camHorizontalUp);
-        // projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
-
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::modelMatrixLoc), 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(glGetUniformLocation(shaderCube.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
-
-        // glUniform3f(glGetUniformLocation(shaderCube.Program, Settings::viewPosLoc), camMainPos.x, camMainPos.y, camMainPos.z);
-
-        // cubemap->useCubemap(shaderCube);
-
-        // glBindVertexArray(cubeVAO);
-        // glDrawArrays(GL_TRIANGLES, 0, 36);
-        // glBindVertexArray(0);
-
-        // zNeg->DetachBuffer();
-
-        /* /DRAWING ON FRAMEBUFFERS */
-
-        /* creating cubemap for dynamic environmental mapping */
-
-        /* / */
-        //glDepthMask(GL_TRUE);
-        shaderGlass.Use();
 
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         projection = glm::perspective(glm::radians(Settings::FOV), (float)width / (float)height, Settings::PerspectiveNear, Settings::PerspectiveFar);
+
+        shaderGlass.Use();
+
 
         glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::viewMatrixLoc), 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(glGetUniformLocation(shaderGlass.Program, Settings::projectionMatrixLoc), 1, GL_FALSE, glm::value_ptr(projection));
@@ -488,15 +354,19 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos)
     cameraFront = glm::normalize(front);
 }
 
-void draw_scene(glm::vec3 camPos, glm::vec3 camFront, glm::vec3 camUp, Shader shaderCube, Framebuffer buffer, Texture cubemap, int width, int height, GLuint cubeVAO)
+void draw_scene(glm::vec3 &camPos, glm::vec3 &camFront, glm::vec3 &camUp, Shader &shaderCube, Framebuffer &buffer, Texture &cubemap, int width, int height, GLuint cubeVAO)
 {
-    buffer.BindBuffer();
-
-    shaderCube.Use();
-
     glm::mat4 model;
     glm::mat4 view;
     glm::mat4 projection;
+    
+    buffer.BindBuffer();
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    shaderCube.Use();
+
 
     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     view = glm::lookAt(camPos, camPos + camFront, camUp);
