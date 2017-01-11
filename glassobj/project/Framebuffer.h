@@ -8,6 +8,7 @@ class Framebuffer
     {
         width = screenWidth;
         height = screenHeight;
+        textureBytes = std::vector<GLubyte>(width * height * 4);
     }
 
     void InitTextureFramebuffer()
@@ -18,7 +19,7 @@ class Framebuffer
         //texture
         glGenTextures(1, &texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -31,11 +32,35 @@ class Framebuffer
 
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
             std::cout << "Framebuffer is not complete!" << std::endl;
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void BindBuffer()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    }
+
+    void UseBuffer()
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        //glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    }
+
+    void DetachBuffer()
+    {
+        //glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, textureBytes.data());
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    std::vector<GLubyte> getTexturePixels()
+    {
+        return textureBytes;
     }
 
   private:
@@ -45,6 +70,7 @@ class Framebuffer
     GLuint height;
 
     GLuint texture;
+    std::vector<GLubyte> textureBytes;
 };
 
 #endif // !FRAMEBUFFER_H
